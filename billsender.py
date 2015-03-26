@@ -4,8 +4,7 @@ from PIL import Image, ImageTk
 from email.MIMEMultipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from time import localtime, strftime
-import smtplib
-import win32com.client
+import os, glob, smtplib, win32com.client
 
 class Window(Frame):
 		def __init__(self, parent):
@@ -13,10 +12,19 @@ class Window(Frame):
 			self.parent = parent
 			self.centerWindow()
 			self.initUI()
+
+			filelist = glob.glob('*.pdf')
+			for file in filelist:
+				os.remove(file)
+
+			filelist = glob.glob('*.jpg')
+			for file in filelist:
+				os.remove(file)
+				
 			self.output = ""
 
 		def initUI(self):
-			img = Image.open("welcomepage.jpg")
+			img = Image.open("welcomepage.png")
 			img = img.resize((250, 450), Image.ANTIALIAS)
 			WelcomeImage = ImageTk.PhotoImage(img)
 
@@ -64,13 +72,12 @@ class Window(Frame):
 			img.SaveFile(fname)
 
 			ScanImg = Image.open(fname)
+			ScanImg.save(self.output, "PDF", resolution = 100.0)
 			ScanImg = ScanImg.resize((250, 450), Image.ANTIALIAS)
 			ChangeImage = ImageTk.PhotoImage(ScanImg)
 
 			self.label1.configure(image = ChangeImage)
 			self.label1.image = ChangeImage
-
-			ScanImg.save(self.output, "PDF", resolution = 100.0)
 
 		def EmailClick(self):
 			From = 'jprucool@gmail.com'
@@ -111,11 +118,10 @@ class Window(Frame):
 			self.To.insert(0, value)
 
 def main():
-
-	root = Tk()
-	root.resizable(0,0)
-	app = Window(root)
-	root.mainloop()
+    root = Tk()
+    root.resizable(0,0)
+    app = Window(root)
+    root.mainloop()
 
 if __name__ == '__main__':
 	main()
