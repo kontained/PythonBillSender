@@ -13,4 +13,4 @@ class GmailAuthenticationTestCase(TestCase):
         self.assertRaises(ValueError, self.gmail_authentication.get_user_credentials, '')
 
     def test_get_credentials(self):
-        self.assertIsNotNone(self.gmail_authentication.get_user_credentials('kontained'))
+        self.assertIsNotNone(self.gmail_authentication.get_user_credentials('test'))
