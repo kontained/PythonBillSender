@@ -25,7 +25,7 @@ class EmailMessage(object):
         if self.valid_email_regex.match(sender):
             self.message['From'] = sender
         else:
-            raise ValueError('Invalid recipient email address.')
+            raise ValueError('Invalid sender email address.')
 
     def get_subject(self) -> str:
         return self.message['Subject']
