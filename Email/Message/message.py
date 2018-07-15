@@ -1,4 +1,4 @@
-from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import re
 
 
@@ -7,7 +7,7 @@ class EmailMessage(object):
     valid_email_regex = re.compile(valid_email_regex_pattern)
 
     def __init__(self):
-        self.message = MIMEMultipart()
+        self.message = MIMEText('This is a test message')
 
     def get_recipient(self) -> str:
         return self.message['To']

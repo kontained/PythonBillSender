@@ -1,16 +1,18 @@
 from unittest import TestCase
 from Email.Account.account import EmailAccount
+from Email.Account.Type.gmail import GmailAccount
 
 
 class EmailAccountTestCase(TestCase):
     def setUp(self):
-        self.email_account = EmailAccount('test@gmail.com', 'testpassword')
+        pass
 
-    def test_email_account_init(self):
-        self.assertTrue(self.email_account is not None)
+    def tearDown(self):
+        pass
 
-    def test_email_account_address(self):
-        self.assertEqual(self.email_account.email_address, 'test@gmail.com')
+    def test_email_account_factory(self):
+        gmail = EmailAccount.factory('gmail')
+        self.assertTrue(isinstance(gmail, GmailAccount))
 
-    def test_email_account_password(self):
-        self.assertEqual(self.email_account.email_password, 'testpassword')
+    def test_email_account_invalid_type(self):
+        self.assertRaises(KeyError, EmailAccount.factory, 'invalid')

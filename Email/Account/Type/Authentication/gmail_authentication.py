@@ -1,5 +1,4 @@
 import os
-import oauth2client
 from oauth2client import client, tools, file
 from config import Configuration
 
@@ -8,7 +7,7 @@ class GmailAuthentication:
     def __init__(self):
         self.configuration = Configuration()
 
-    def get_user_credentials(self, username):
+    def get_user_credentials(self, username: str) -> client.OAuth2Credentials:
         self.validate_username(username)
 
         self.create_credentials_folder()
@@ -18,19 +17,21 @@ class GmailAuthentication:
         return credentials
 
     @staticmethod
-    def validate_username(username):
+    def validate_username(username: str):
         if not isinstance(username, str):
             raise TypeError('Username must be a string!')
         if not username:
             raise ValueError('Username cannot be null!')
 
     def create_credentials_folder(self):
-        if not os.path.exists(self.configuration.client_secrets_file_path):
-            os.makedirs(self.configuration.client_secrets_file_path)
+        if not os.path.exists(self.configuration.credentials_file_path):
+            os.makedirs(self.configuration.credentials_file_path)
 
-    def get_credentials_file(self, username):
-        credentials_file_path = os.path.join(self.configuration.client_secrets_file_path, username + '.json')
-        store = oauth2client.file.Storage(credentials_file_path)
+    def get_credentials_file(self, username: str):
+        credentials_file_path = os.path.join(
+            self.configuration.credentials_file_path, username.split('@')[0] + '.json')
+
+        store = file.Storage(credentials_file_path)
         credentials = store.get()
 
         if not credentials or credentials.invalid:

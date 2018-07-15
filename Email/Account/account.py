@@ -1,4 +1,8 @@
+from Email.Account.Type.gmail import GmailAccount
+
+
 class EmailAccount(object):
-    def __init__(self, email_address: str, email_password: str):
-        self.email_address = email_address
-        self.email_password = email_password
+    @staticmethod
+    def factory(account_type: str):
+        valid_account_types = {'gmail': GmailAccount}
+        return valid_account_types[account_type]()
