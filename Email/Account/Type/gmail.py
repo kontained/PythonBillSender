@@ -8,18 +8,22 @@ from Email.Account.Type.Authentication.gmail_authentication import GmailAuthenti
 class GmailAccount(object):
     def __init__(self):
         self.authentication = GmailAuthentication()
+        self.http = httplib2.Http()
 
     def send_email(self, message: EmailMessage):
         self.authenticate(message)
 
+        service = build('gmail', 'v1', http=self.http)
+
+        body = self.base64_encode_email(message)
+
+        (service.users().messages().send(userId='me', body=body).execute())
+
     def authenticate(self, message: EmailMessage):
-        try:
-            http = httplib2.Http()
-            credentails = self.authentication.get_user_credentials(message.get_sender())
-            http = credentails.authorize(http)
-            service = build('gmail', 'v1', http=http)
-            buffer = bytes(message.message.as_string(), 'UTF-8')
-            body = {'raw': base64.b64encode(buffer).decode('UTF-8')}
-            (service.users().messages().send(userId='me', body=body).execute())
-        except Exception as error:
-            print(error)
+        credentails = self.authentication.get_user_credentials(message.get_sender())
+        self.http = credentails.authorize(self.http)
+
+    @staticmethod
+    def base64_encode_email(message: EmailMessage):
+        buffer = bytes(message.message.as_string(), 'UTF-8')
+        return {'raw': base64.b64encode(buffer).decode('UTF-8')}
